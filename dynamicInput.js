@@ -60,10 +60,11 @@
         },
         addInput: function(options) {
             if ($(this).is(thisDiv)) {
-                $(thisDiv).append(defaultHtml);
+                (thisDiv).append(defaultHtml);
             }
             else {
-                $(this).parent().parent().append(defaultHtml);
+                $(this).parent().after(defaultHtml);
+                $(this).parent().next().children("input").focus();
             }
         },
         removeInput: function(options) {
@@ -78,14 +79,27 @@
             if ($(this).is(thisDiv)) {
                 if ($(this).children().length > 1) {
                     $(thisDiv).children().filter(":last").remove();
+                    $(thisDiv).children().filter(":last").children("input").focus();
                 }
             }
             else {
                 if ($(this).parent().siblings().length > 0) {
+                    var lastChild = $(thisDiv).children().filter(":last");
+                    var elementToFocus = $(this).parent().next().children("input");
+
+                    if ($(this).parent().is(lastChild)) {
+                        $(thisDiv).children().filter(":last").prev().children("input").focus();
+                    }
+                    else {
+                        $(elementToFocus).focus();
+                    }
+
+
                     $(this).parent().remove();
+
                 }
                 else {
-                    $(this).siblings("input").val("");
+                    $(this).siblings("input").val("").focus();
                 }
             }
         }
