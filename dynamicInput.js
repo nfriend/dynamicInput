@@ -1,12 +1,22 @@
 (function($) {
 
-    var defaultHtml = "<div><input type='text' /><a class='plusbutton'>+</a><a class='minusbutton'>-</a></div>";
-
+    var defaultHtml = "";
     var thisDiv = {};
 
     var methods = {
-        init: function() {
+        init: function(options) {
             thisDiv = this;
+
+            var textarea_width;
+
+            if (options && options.width) {
+                textarea_width = options.width;
+            }
+            else {
+                textarea_width = 150;
+            }
+
+            defaultHtml = "<div><input type='text' style='width:" + textarea_width + "px;'/><a class='plusbutton'>+</a><a class='minusbutton'>-</a></div>";
 
             $(this).on("keydown", "input", function(event) {
                 if (event.keyCode === 13) {
@@ -27,7 +37,9 @@
                         $(thisDiv).children().filter(":first").children("input").focus()
                     }
                     else {
-                        $(elementToFocus).focus();
+                        setTimeout(function() {
+                            $(elementToFocus).focus().select();
+                        }, 1);
                     }
                 }
 
@@ -38,10 +50,14 @@
                     $(event.target).parent().remove();
 
                     if ($(event.target).parent().is(lastChild)) {
-                        $(thisDiv).children().filter(":last").children("input").focus()
+                        setTimeout(function() {
+                            $(thisDiv).children().filter(":last").children("input").focus().select()
+                        }, 1);
                     }
                     else {
-                        $(elementToFocus).focus();
+                        setTimeout(function() {
+                            $(elementToFocus).focus().select();
+                        }, 1);
                     }
 
 
@@ -60,11 +76,10 @@
         },
         addInput: function(options) {
             if ($(this).is(thisDiv)) {
-                (thisDiv).append(defaultHtml);
+                $(thisDiv).append(defaultHtml);
             }
             else {
-                $(this).parent().after(defaultHtml);
-                $(this).parent().next().children("input").focus();
+                $(this).parent().parent().append(defaultHtml);
             }
         },
         removeInput: function(options) {
@@ -79,27 +94,14 @@
             if ($(this).is(thisDiv)) {
                 if ($(this).children().length > 1) {
                     $(thisDiv).children().filter(":last").remove();
-                    $(thisDiv).children().filter(":last").children("input").focus();
                 }
             }
             else {
                 if ($(this).parent().siblings().length > 0) {
-                    var lastChild = $(thisDiv).children().filter(":last");
-                    var elementToFocus = $(this).parent().next().children("input");
-
-                    if ($(this).parent().is(lastChild)) {
-                        $(thisDiv).children().filter(":last").prev().children("input").focus();
-                    }
-                    else {
-                        $(elementToFocus).focus();
-                    }
-
-
                     $(this).parent().remove();
-
                 }
                 else {
-                    $(this).siblings("input").val("").focus();
+                    $(this).siblings("input").val("");
                 }
             }
         }
@@ -117,3 +119,14 @@
 
 
 })(jQuery);
+
+$("#mydiv").dynamicInput({
+    width: 120
+});
+
+$("#testbutton").click(function() {
+    selectorstring = $("#selectorinput").val();
+    $('#mydiv').dynamicInput('removeInput', {
+        selector: selectorstring
+    });
+});?
