@@ -19,6 +19,8 @@
             defaultHtml = "<div><input type='text' style='width:" + textarea_width + "px;'/><a class='plusbutton'>+</a><a class='minusbutton'>-</a></div>";
 
             $(this).on("keydown", "input", function(event) {
+                thisDiv = $(event.target).parent().parent();
+                
                 if (event.keyCode === 13) {
                     event.preventDefault();
                     var thisElement = $(event.target).parent();
@@ -119,14 +121,3 @@
 
 
 })(jQuery);
-
-$("#mydiv").dynamicInput({
-    width: 120
-});
-
-$("#testbutton").click(function() {
-    selectorstring = $("#selectorinput").val();
-    $('#mydiv').dynamicInput('removeInput', {
-        selector: selectorstring
-    });
-});?
